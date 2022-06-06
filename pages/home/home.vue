@@ -1,5 +1,9 @@
 <template>
   <view>
+    <!-- 使用自定义的搜索组件 -->
+    <view class="search-box">
+      <my-search @click="gotoSearch"></my-search>
+    </view>
     <swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" circular="true">
       <swiper-item v-for="item in swiperList" :key="item.goods_id">
         <navigator class="swiper-item" :url="'/subpkg/goods_detail/goods_detail? goods_id=' + item.goods_id">
@@ -22,14 +26,15 @@
         <image :src="item.floor_title.image_src" class="floor-title"></image>
         <view class="floor-img-box">
           <!-- 左侧大图片的盒子 -->
-          <navigator class="left-img-box"  :url="item.product_list[0].url">
-            <image :src="item.product_list[0].image_src" :style="{width: item.product_list[0].image_width + 'rpx'}" mode="widthFix"></image>
+          <navigator class="left-img-box" :url="item.product_list[0].url">
+            <image :src="item.product_list[0].image_src" :style="{width: item.product_list[0].image_width + 'rpx'}"
+              mode="widthFix"></image>
           </navigator>
           <!-- 右侧四个小图片 :src="item.product_list[0].image_src" :style="{width: item.product_list[0].image_width + 'rpx'}" mode="widthFix"-->
 
           <view class="right-img-box">
-            <navigator class="right-img-item"  
-            v-for="(item2, i2) in item.product_list" :key="i2" v-if="i2 !== 0" :url="item2.url">
+            <navigator class="right-img-item" v-for="(item2, i2) in item.product_list" :key="i2" v-if="i2 !== 0"
+              :url="item2.url">
               <image :src="item2.image_src" :style="{width: item2.image_width + 'rpx'}" mode="widthFix"></image>
             </navigator>
           </view>
@@ -87,7 +92,7 @@
           })
         }
       },
-       //获取楼层列表
+      //获取楼层列表
       async getFloorList() {
         const {
           data: res
@@ -95,15 +100,21 @@
         console.log(res)
         if (res.meta.status !== 200) return uni.$showMsg()
         //
-          // 通过双层 forEach 循环，处理 URL 地址 
-          res.message.forEach(floor=> {
+        // 通过双层 forEach 循环，处理 URL 地址 
+        res.message.forEach(floor => {
           floor.product_list.forEach(prod => {
             prod.url = '/subpkg/goods_list/goods_list?' + prod.navigator_url.split('?')[1]
           })
         })
-      this.floorList = res.message
+        this.floorList = res.message
+      },
+      // 进入搜索页面
+      gotoSearch() {
+        uni.navigateTo({
+          url: '/subpkg/search/search'
+        })
+      }
     }
-  }
   }
 </script>
 
@@ -150,5 +161,14 @@
   .floor-img-box {
     display: flex;
     padding-left: 10rpx;
+  }
+
+  .search-box {
+    // 设置定位效果为“吸顶” 
+    position: sticky;
+    // 吸顶的“位置”
+    top: 0;
+    // 提高层级，防止被轮播图覆盖
+    z-index: 999;
   }
 </style>

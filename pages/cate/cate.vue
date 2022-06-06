@@ -1,5 +1,6 @@
 <template>
   <view>
+    <my-search @click="gotoSearch"></my-search>
     <view class="scroll-view-container">
       <!-- 左侧的滚动视图区域 -->
       <scroll-view class="left-scroll-view" scroll-y :style="{height: wh + 'px'}">
@@ -14,7 +15,7 @@
           <view class="cate-lv2-title">/ {{item2.cat_name}} /</view>
           <view class="cate-lv3-list">
             <view class="cate-lv3-item" v-for="(item3,i3) in item2.children" :key="item3.cat_id"
-             @click="gotoGoodsList(item3)">
+              @click="gotoGoodsList(item3)">
               <image :src="item3.cat_icon"></image>
               <text>{{item3.cat_name}}</text>
             </view>
@@ -35,13 +36,13 @@
         active: 0,
         // 二级分类列表
         cateLevel2: [],
-        scrollTop:0
+        scrollTop: 0
       };
     },
     onLoad() {
       // 获取手机窗口高度
       const sysInfo = uni.getSystemInfoSync()
-      this.wh = sysInfo.windowHeight
+      this.wh = sysInfo.windowHeight - 50
       this.getCateList()
     },
     methods: {
@@ -49,7 +50,6 @@
         const {
           data: res
         } = await uni.$http.get('/api/public/v1/categories')
-        console.log(res)
         // 判断是否获取失败 
         if (res.meta.status !== 200) return uni.$showMsg()
         // 转存数据 
@@ -62,10 +62,18 @@
         this.active = i
         // 为二级分类列表重新赋值 
         this.cateLevel2 = this.cateList[i].children
-        this.scrollTop=this.scrollTop===0?1:0
+        this.scrollTop = this.scrollTop === 0 ? 1 : 0
       },
-      gotoGoodsList(item3){
-        uni.navigateTo({ url: '/subpkg/goods_list/goods_list?cid='+item3.cat_id })
+      gotoGoodsList(item3) {
+        uni.navigateTo({
+          url: '/subpkg/goods_list/goods_list?cid=' + item3.cat_id
+        })
+      },
+      // 跳转到分包中的搜索页面
+      gotoSearch() {
+        uni.navigateTo({
+          url: '/subpkg/search/search'
+        })
       }
     }
   }

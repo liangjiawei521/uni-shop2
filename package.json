@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/liangjiawei521/uni-shop2#readme",
   "dependencies": {
+    "@dcloudio/uni-ui": "^1.4.15",
     "@escook/request-miniprogram": "^0.2.1"
   }
 }
